@@ -1,0 +1,39 @@
+{% load static %}
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>{% block title %} {{page_title | default:"Untitled Page"}}{% endblock title %}</title>
+    <link rel="stylesheet" href="{% static 'main.css' %}" type="text/css">
+</head>
+<body>
+<div id="wrapper">
+    <header id="header">
+        <div id="logo"><img src="{% static 'logo.png' %}"></div>
+        <div id="top_menu">Home | Calendar | About | Contact</div>
+        <div id="topbanner"><img src="{% static 'top_banner.jpg' %}"></div>
+    </header>
+    <aside id="rightsidebar">
+        <nav id="nav">
+            <ul>
+                <li>Menu 1</li>
+                <li>Menu 2</li>
+                <li>Menu 3</li>
+            </ul>
+        </nav>
+    </aside>
+    <section id="main">
+        {% block content %}
+            <p>Placeholder text in base template. Replace with page content.</p>
+        {% endblock content %}
+    </section>
+    <footer id="footer">
+        Copyright &copy;
+        <script type="text/Javascript">
+            document.write(new Date().getFullYear());
+        </script> MyClub
+    </footer>
+</div>
+</body>
+</html>
