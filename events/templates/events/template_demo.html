@@ -1,0 +1,307 @@
+{% load static %}
+<!doctype html>
+<html>
+  <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" context="width=device-width,initial-scale=1.0">
+  <title>Testing out the Template System</title>
+  <style>
+    .row{
+      background-color: lightskyblue;
+    }
+    .altrow{
+      background-color: lightgray;
+    }
+    table td{
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <h1>Templates Demo File</h1>
+  <h2>Comment Tag</h2>
+<!-- This is a normal HTML comment which shows in your browser
+source-->
+{% comment "this won't show at all in your browser source" %}
+<p>Three six nine, the goose drank wine</p>
+{% endcomment %}
+{% for i in '12345' %}
+  <p style="color:{% cycle 'blue' 'brown' 'red' 'cyan' %};">Colored Text</p>
+{% endfor %}
+
+<p><strong>Cycle tag used to format a table:</strong></p>
+<table border=0 style="width: 100px">
+{% for i in '12345' %}
+<tr class="{% cycle 'row' 'altrow' %}">
+<td>{{ i }}</td>
+</tr>
+{% endfor %}
+</table
+
+<p><strong>Resetcycle tag:</strong></p>
+<table border=0 style="width: 100px">
+{% for i in '12345' %}
+<tr class="{% cycle 'row' 'altrow' %}">
+<td>{{ i }}</td>
+</tr>
+{% resetcycle %}
+{% endfor %}
+</table>
+
+<h2>Filter Tag</h2>
+{% filter striptags|upper %}
+<p>This text will be converted to uppercase and have the HTML tags
+<em>removed</em>.</p>
+{% endfilter %}
+
+<h2>Firstof Tag</h2>
+<p>{% firstof None False '' empty_list 'This one!' 'Not this one'%}</p>
+
+<h2>For Tag</h2>
+<p><strong>List Colors:</strong></p>
+<ul>
+{% for item in color_list %}
+<li>{{ item }}{{ forloop.counter }}</li>
+{% endfor %}
+</ul>
+
+<p><strong>The for loop variables:</strong></p>
+<table border=1>
+<tr>
+<th>Item</th>
+<th>forloop.counter</th>
+<th>forloop.counter0</th>
+<th>forloop.revcounter</th>
+<th>forloop.revcounter0</th>
+<th>forloop.first</th>
+<th>forloop.last</th>
+</tr>
+{% for item in color_list %}
+<tr>
+<td>{{ item }}</td>
+<td>{{ forloop.counter }}</td>
+<td>{{ forloop.counter0 }}</td>
+<td>{{ forloop.revcounter }}</td>
+<td>{{ forloop.revcounter0 }}</td>
+<td>{{ forloop.first }}</td>
+<td>{{ forloop.last }}</td>
+</tr>
+{% endfor %}
+</table>
+
+<p><strong>For...empty Tag</strong></p>
+<p><strong>The for...empty tag will show the empty clause if there
+are no items in the list:</strong></p>
+<p><strong>This list has items to show:</strong></p>
+<ul>
+{% for item in color_list %}
+<li>{{ item }}</li>
+{% empty %}
+<li>Nothing in the list!</li>
+{% endfor %}
+</ul>
+<p><strong>But this one doesn't:</strong></p>
+<ul>
+{% for item in empty_list %}
+<li>{{ item }}</li>
+{% empty %}
+<li>Nothing in the list!</li>
+{% endfor %}
+</ul>
+
+<h2>If Tag</h2>
+{% if empty_list %}
+This line won't show as list is empty.
+{% elif color_list %}
+color_list is not empty, so this line shows.
+{% else %}
+Optional else clause. This won't show in this example.
+{% endif %}
+
+  {% if somevar > 5 %}
+somevar is greater than 5
+{% else %}
+somevar is less than 5
+{% endif %}
+<br />
+{% if empty_list and color_list %}
+Both lists have content
+{% else%}
+One list is empty
+{% endif %}
+<br />
+{% if empty_list or color_list %}
+At least one list has content
+{% endif %}
+<br />
+{% if not empty_list %}
+Negated an empty list, so this will print.
+{% endif %}
+<br />
+{% if anothervar is True %}
+This prints if and only if anothervar is True.
+{% endif %}
+<br />
+{% if novar is None %}
+This appears if novar is None, or if novar is not found in the con-
+text.
+{% endif %}
+<br />
+{% if anothervar is True %}
+This prints if and only if anothervar is True.
+{% endif %}
+<br />
+{% if novar is None %}
+This appears if novar is None, or if novar is not found in the con-
+text.
+{% endif %}
+
+{% if "dog" in "catdog" %}
+The best half!
+{% endif %}
+<br />
+{% if "orange" in color_list %}
+Orange is in the list!
+{% else %}
+Orange is not in the list!
+{% endif %}
+
+<h2>Now Tag</h2>
+{% now "m-d-Y H:i" %}
+
+<h2>Regroup Tag</h2>
+{% regroup best_bands by country as band_list %}
+<p>Best Bands:</p>
+<ul>
+{% for band in band_list %}
+<li>
+{{ band.grouper }}
+<ul>
+{% for band in band.list %}
+<li>{{ band.name }}</li>
+{% endfor %}
+</ul>
+</li>
+{% endfor %}
+</ul>
+
+<h2>Widthratio Tag</h2>
+<img src=" {% static 'redbar.png'%}" width="{% widthratio 33 100
+200 %}">
+<img src=" {% static 'bluebar.png'%}" height="200px" width="
+{% widthratio 33 100 200 %}">
+<img src=" {% static 'greenbar.png'%}" height="300px" width="
+{% widthratio 50 200 100 %}"
+
+<h2>With Tag</h2>
+{% with total_items=color_list|length %}
+The list has {{ total_items }} item{{ total_items|pluralize }}
+{% endwith %}
+<hr />
+
+<h2>Add Filter</h2>
+{{ somevar|add:'12' }}<br />
+{{ somevar|add:anothervar }}<br />
+
+<h2>Addslashes Filter</h2>
+{{ "I'm not. She didn't."|addslashes }}<br />
+{{ 'He said "NO!"'|addslashes }}
+
+<h2>Sentence Casing Filters</h2>
+{{ "the 'capfirst' filter will capitalize the first word"|capfirst}}<br />
+{{ "The 'lower' Filter will Convert the Sentence to LOWERCASE"|lower}}<br />
+{{ "the 'upper' filter will convert the sentence to uppercase"|upper }}<br
+/>
+{{ "and the 'title' filter will convert the sentence to title case"|title }}
+
+<h2>Field Alignment Filters</h2>
+<pre>|{{ "Left Justified"|ljust:"30" }}|</pre><br />
+<pre>|{{ "Centered"|center:"30" }}|</pre><br />
+<pre>|{{ "Right Justified"|rjust:"30" }}|</pre>
+
+<h2>Cut Filter</h2>
+{{ "I really don't like the letter 'e' for some reason"|cut:"e" }}
+
+<h2>Formatting Dates and Times</h2>
+{{ today|date:"l jS E Y" }}<br />
+{{ today|time:"H:i" }}
+
+<h2>Showing Default Values</h2>
+{{ empty_list|default:"Empty list" }}<br />
+{{ empty_list|default_if_none:"This won't show as Empty != None" }}<br
+/>
+{{ None|default_if_none:"Obvious, but you get the idea" }}
+
+<h2>Sorting Dictionaries</h2>
+{{ best_bands|dictsort:"name"}}
+You can also sort in reverse with dictsortreversed:
+{{ best_bands|dictsortreversed:"name"}}
+
+<h2>Divisibleby Filter</h2>
+{{ anothervar|divisibleby:"4" }}<br />
+{{ anothervar|divisibleby:"3" }}
+
+<h2>Filesizeformat Filter</h2>
+<p><strong></strong></p>
+{{ 44040192|filesizeformat }}
+
+<h2>Retrieving the First and Last Items from a List</h2>
+{{ color_list|first }}
+Retrieve the last item with the last filter:
+{{ color_list|last }}
+
+<h2>Format Floating Point Numbers</h2>
+{{ 3.14159265|floatformat }}
+You can also specify the number of decimal places:
+{{ 3.14159265|floatformat:4 }}
+
+<h2>get_digit Filter</h2>
+<p><strong></strong></p>
+{{ anothervar|get_digit:1 }}<br />
+{{ anothervar|get_digit:1 }}<br />
+{{ "Hello"|get_digit:2 }}<br />
+
+<h2>Join Filter</h2>
+<p><strong></strong></p>
+{{ color_list|join:" and " }}
+
+<h2>Output JSON</h2>
+<p><strong>JSON can be output using the <code>json_script</code>
+filter:</strong></p>
+<p>(You will need to look in the page source to see this one)</p>
+{{ best_bands|json_script:"best-bands" }}
+{{ venues|json_script:"all-venues" }}
+
+<h2>Length_is Filter</h2>
+{{ color_list|length_is:"4" }}<br />
+{{ empty_list|length_is:"2" }}<br />
+{{ "Hello"|length_is:"5" }}
+
+<h2>Make_list Filter</h2>
+{{ "Hello"|make_list }}<br />
+{{ "12345"|make_list }}<br />
+{{ anothervar|make_list }}<br />
+{{ 3.14159265|make_list }}
+
+<h2>Phone2numeric Filter</h2>
+{{ "1800 BITE ME"|phone2numeric }}
+
+<h2>Random Filter</h2>
+<p>(This list will change every time you refresh the browser)</p>
+{{ color_list|random }}<br />
+{{ color_list|random }}<br />
+{{ color_list|random }}
+
+<h2>Slice Filter</h2>
+{{ color_list|slice:":3" }}<br />
+{{ color_list|slice:"2:" }}<br />
+{{ color_list|slice:":-1" }}<br />
+{{ color_list|slice:"1:2" }}
+
+<h2>Slugify Filter</h2>
+{{ "Number of the Beast"|slugify }}
+
+{{ "slugify won't use these: /\$#^&"|slugify }}
+
+</body>
+</html>

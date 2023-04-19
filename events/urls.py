@@ -5,6 +5,8 @@ from . import views
 urlpatterns = [
     # path('<int:year>/<str:month>/',views.index,name='index'),
     path('',views.index,name='index'),
+    path('tdemo/',views.template_demo,name='tdemo'),
+    path('getsubs/',views.list_subscribers,name='list-subscribers'),
     path('gentext/',views.gen_text,name='generate-text-file'),
     path('gencsv/',views.gen_csv,name='generate-csv-file'),
     path('genpdf/',views.gen_pdf,name='generate-pdf-file'),
