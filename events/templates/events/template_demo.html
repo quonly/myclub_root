@@ -1,4 +1,5 @@
 {% load static %}
+{% load static humanize %}
 <!doctype html>
 <html>
   <head>
@@ -302,6 +303,65 @@ filter:</strong></p>
 {{ "Number of the Beast"|slugify }}
 
 {{ "slugify won't use these: /\$#^&"|slugify }}
+
+<h2>Stringformat Filter</h2>
+{{ 314159265|stringformat:"E" }}<br />
+{{ 3.14159265|stringformat:".2f" }}
+
+<h2>Striptags Filter</h2>
+{{ "<h1>The Title</h1>"|striptags }}
+
+<h2>Calculating the Difference Between Dates</h2>
+{{ today|timesince:future }}
+{{ today|timeuntil:past }}
+
+<h2>Truncating Strings</h2>
+{{ "The Title"|truncatechars:7 }}<br />
+{{ "<em>The Title</em>"|truncatechars_html:7 }}<br />
+
+{{ "The Title"|truncatewords:1 }}<br />
+<p><strong>HTML aware version:</strong></p>
+{{ "<em>The Title</em>"|truncatewords_html:1 }}
+
+<h2>Unordered Lists</h2>
+<ul>
+{{ aussie_bands|unordered_list }}
+</ul>
+
+<h2>Encoding URLs</h2>
+{{ "https://bestbands.example.com/bands?album=Master of Pup-pets&rating=awesome"|urlencode }}
+
+<h2>Creating Hyperlinks</h2>
+<p><strong></strong></p>
+{{ "The djangobook.com website is awesome!"|urlize }}<br />
+{{ "The djangobook.com website is awesome!"|urlizetrunc:11 }}
+
+<h2>Wordcount Filter</h2>
+{{ "The djangobook.com website is awesome!"|wordcount }}
+
+<h2>Wordwrap Filter</h2>
+<pre>{{ "Now I lay me down to sleep"|wordwrap:4 }}</pre>
+
+<h2>Yesno Filter</h2>
+{{ True|yesno }}<br />
+{{ False|yesno }}<br />
+{{ None|yesno }}<br />
+
+{{ True|yesno:"yeah baby,heck no,meh" }}<br />
+{{ False|yesno:"yeah baby,heck no,meh" }}<br />
+{{ None|yesno:"yeah baby,heck no,meh" }}
+
+<h2>The Humanize Filters</h2>
+{{ 1|apnumber }}, {{ 5|apnumber }}, {{ 12|apnumber }}<br />
+
+{{ 4500|intcomma }}; {{ 42123456.78|intcomma }}<br />
+
+{{ 4000000|intword }}; {{ 42000000000|intword }}<br />
+
+{{ today|naturalday }}<br />
+{{ today|naturaltime }}; {{ past|naturaltime }}; {{ future|naturaltime }}<br /
+
+{{ 1|ordinal }}, {{ 2|ordinal }}, {{ 3|ordinal }}, {{ 20|ordinal }}
 
 </body>
 </html>
