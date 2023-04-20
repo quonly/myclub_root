@@ -10,7 +10,7 @@ from events.models import Event, Venue, MyClubUser
 from events.forms import VenueForm
     
 def all_events(request):
-    event_list = Event.objects.all()
+    event_list = Event.events.all()
     context = {
         'event_list': event_list,
     }

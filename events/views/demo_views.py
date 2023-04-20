@@ -1,18 +1,43 @@
+# django
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import FileResponse
 from django.core import serializers
 from django.template import RequestContext, Template
-from datetime import datetime
+from django.views.generic.base import TemplateView
+from django.views.generic.list import ListView
+from django.views.generic.detail import DetailView
 
+# models
+from events.models import Venue,MyClubUser,Event
+
+# python package
+from datetime import datetime
 import csv
 import io
+
+# app package
 from reportlab.pdfgen import canvas
 from reportlab.lib.units import inch
 from reportlab.lib.pagesizes import letter
-from events.models import Venue
 
 
+class ListViewDemo(ListView):
+    model = Event
+    context_object_name = 'all_events'
+    
+class DetailViewDemo(DetailView):
+    model = Event
+    context_object_name = 'event'
+
+class TemplateViewDemo(TemplateView):
+    template_name = "events/cbv_demo.html"
+
+    def get_context_data(self,**kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = "Testing The TemplateView CBV"
+        return context
+    
 def my_processor(request):
     return {
         'foo':'foo',

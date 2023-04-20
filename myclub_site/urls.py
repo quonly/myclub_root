@@ -17,6 +17,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
+from django.views.generic.base import TemplateView,RedirectView
+from events.views import TemplateViewDemo
 from . import contact
 '''
     There are five different path converter types:
@@ -34,6 +36,8 @@ from . import contact
 # admin.site.index_title = 'MyClub Site Admin Home'
 
 urlpatterns = [
+    path('home/',RedirectView.as_view(url='/',permanent=True)),
+    path('cbvdemo/',TemplateViewDemo.as_view(template_name='events/cbv_demo.html')),
     path('admin/', admin.site.urls),
     path('admin/password_reset/',auth_views.PasswordResetView.as_view(),name='admin_password_reset'),
     path('admin/password_reset/done/',auth_views.PasswordResetDoneView.as_view(),name='password_reset_done'),
