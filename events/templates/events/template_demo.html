@@ -1,5 +1,5 @@
 {% load static %}
-{% load static humanize %}
+{% load static humanize event_custom_tags %}
 <!doctype html>
 <html>
   <head>
@@ -362,6 +362,13 @@ filter:</strong></p>
 {{ today|naturaltime }}; {{ past|naturaltime }}; {{ future|naturaltime }}<br /
 
 {{ 1|ordinal }}, {{ 2|ordinal }}, {{ 3|ordinal }}, {{ 20|ordinal }}
+
+<h2>Custom Tags and Filters</h2>
+<p>{{ "James is in rehab again"|reverse }}</p><br />
+
+{% create_date today %}
+
+{% announcements %}
 
 </body>
 </html>

@@ -2,6 +2,8 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import FileResponse
 from django.core import serializers
+from django.template import RequestContext, Template
+from datetime import datetime
 
 import csv
 import io
@@ -9,8 +11,19 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.units import inch
 from reportlab.lib.pagesizes import letter
 from events.models import Venue
-from datetime import datetime
 
+
+def my_processor(request):
+    return {
+        'foo':'foo',
+        'bar':'bar',
+        'baz':'baz',
+    }
+
+def context_demo(request):
+    template = Template('{{foo}}<br>{{bar}}<br>{{baz}}<br>{{user}}<br>{{perms}}<br>{{request}}<br>{{messages}}<br>{{LANGUAGE_CODE}}<br>{{LANGUAGE_BIDI}}<br>')
+    con = RequestContext(request,processors=[my_processor])
+    return HttpResponse(template.render(con))
 
 def gen_pdf(request):
     buf = io.BytesIO()
