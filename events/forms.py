@@ -1,8 +1,7 @@
 from django import forms
-from django.forms import ModelForm
 from .models import Venue
 
-class VenueForm(ModelForm):
+class VenueForm(forms.ModelForm):
     required_css_class = 'required'
     class Meta:
         model = Venue

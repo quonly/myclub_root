@@ -73,7 +73,7 @@ def add_venue(request):
     return render(request,'events/add_venue.html',context)
 
 def list_subscribers(request):
-    p = Paginator(MyClubUser.objects.all(),3)
+    p = Paginator(MyClubUser.objects.all(),2)
     page = request.GET.get('page')
     subscribers = p.get_page(page)
     context = {

@@ -29,9 +29,9 @@ from . import contact
     5. UUID—matches a universally unique identifier (UUID).
 '''
 
-admin.site.site_header = 'MyClub Administration'
-admin.site.site_title = 'MyClub Site Admin'
-admin.site.index_title = 'MyClub Site Admin Home'
+# admin.site.site_header = 'MyClub Administration'
+# admin.site.site_title = 'MyClub Site Admin'
+# admin.site.index_title = 'MyClub Site Admin Home'
 
 urlpatterns = [
     path('admin/', admin.site.urls),

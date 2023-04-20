@@ -31,14 +31,17 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
+    # 'django.contrib.admin',
+    'myclub_site.apps.MyClubAdminConfig',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     "events.apps.EventsConfig",
+    # https://docs.djangoproject.com/en/4.2/ref/contrib/humanize/
     'django.contrib.humanize',
+    'ckeditor',
 ]
 
 MIDDLEWARE = [

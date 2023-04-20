@@ -1,10 +1,12 @@
 from django.urls import path, re_path
+from events.admin import admin_site
 
 from . import views
 
 urlpatterns = [
     # path('<int:year>/<str:month>/',views.index,name='index'),
     path('',views.index,name='index'),
+    path('eventsadmin/',admin_site.urls),
     path('condemo/',views.context_demo,name='condemo'),
     path('tdemo/',views.template_demo,name='tdemo'),
     path('getsubs/',views.list_subscribers,name='list-subscribers'),
