@@ -1,6 +1,7 @@
 from django import forms
 from django.shortcuts import render, redirect
 from django.core.mail import send_mail, get_connection
+from django.views.generic.edit import FormView
 
 
 class ContactForm(forms.Form):
@@ -9,6 +10,30 @@ class ContactForm(forms.Form):
     subject = forms.CharField(max_length=100)
     message = forms.CharField(widget=forms.Textarea)
 
+class ContactUs(FormView):
+    template_name = 'contact/contact.html'
+    form_class = ContactForm
+    success_url = '/contact?submitted=True'
+
+    def get(self,request,*args,**kwargs):
+        context = self.get_context_data(**kwargs)
+        if 'submitted' in request.GET:
+            context['submitted'] = request.GET['submitted']
+        return self.render_to_response(context)
+    
+    def form_valid(self,form):
+        cd = form.cleaned_data
+        con = get_connection('django.core.mail.backends.console.EmailBackend')
+        send_mail(
+            cd['subject'],
+            cd['message'],
+            # get คือการเข้าถึงข้อมูลในฟิลด์ที่เรียก หากไม่มี value ถัดไปจะเป็นค่า default
+            cd.get(
+                'email', 'noreply@example.com'),
+            ['siteowner@example.com'],
+            connection=con
+        )
+        return super().form_valid(form)
 
 def contact(request):
     submitted = False

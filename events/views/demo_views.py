@@ -3,10 +3,14 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import FileResponse
 from django.core import serializers
+from django.urls import reverse_lazy
+# django template,views
 from django.template import RequestContext, Template
 from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
+from django.views.generic.edit import CreateView, UpdateView,DeleteView
+from django.views.generic.dates import ArchiveIndexView, MonthArchiveView
 
 # models
 from events.models import Venue,MyClubUser,Event
@@ -21,6 +25,35 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.units import inch
 from reportlab.lib.pagesizes import letter
 
+# Class-Based-Views (CBV)
+
+class MonthArchiveViewDemo(MonthArchiveView):
+    queryset = Event.events.all()
+    date_field = "event_date"
+    context_object_name ='event_list'
+    allow_future = True
+    month_format = '%m'
+
+class ArchiveIndexViewDemo(ArchiveIndexView):
+    model=Event
+    date_field="event_date"
+    allow_future = True
+
+class DeleteViewDemo(DeleteView):
+    model = Event
+    context_object_name = 'event'
+    success_url = reverse_lazy('show-events')
+
+class UpdateViewDemo(UpdateView):
+    model = Event
+    fields = ['name','event_date','description']
+    template_name_suffix = '_update_form'
+    success_url = reverse_lazy('show-events')
+
+class CreateViewDemo(CreateView):
+    model = Event
+    fields = ['name','event_date','description']
+    success_url = reverse_lazy('show-events')
 
 class ListViewDemo(ListView):
     model = Event
@@ -37,7 +70,8 @@ class TemplateViewDemo(TemplateView):
         context = super().get_context_data(**kwargs)
         context['title'] = "Testing The TemplateView CBV"
         return context
-    
+
+######################################################################
 def my_processor(request):
     return {
         'foo':'foo',
