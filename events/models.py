@@ -22,12 +22,24 @@ class Venue(models.Model):
 
 
 class MyClubUser(models.Model):
-    first_name = models.CharField(max_length=30)
-    last_name = models.CharField(max_length=30)
-    email = models.EmailField('User Email')
+    user = models.OneToOneField(User,blank=True,null=True,on_delete=models.SET_NULL)
+    address = models.CharField(max_length=100,blank=True)
+    phone = models.CharField(blank=True,max_length=30)
+    volunteer = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.first_name + " " + self.last_name
+        # return self.first_name + " " + self.last_name
+        return ''
+
+MEMBER_CHOICES = [
+    ('A','Adult'),
+    ('J','Junior'),
+    ('C','Concession'),
+]
+
+class Subscriber(models.Model):
+    user = models.OneToOneField(User,blank=True,null=True,on_delete=models.SET_NULL)
+    member_level = models.CharField(max_length=1,choices=MEMBER_CHOICES,default='A')
 
 
 class EventManager(models.Manager):

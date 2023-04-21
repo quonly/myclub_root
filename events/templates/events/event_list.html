@@ -8,7 +8,7 @@
     <h1>All Events</h1>
     <ul>
         {% for event in all_events %}
-            <li><a href="/event/{{event.id}}">{{event.name}}</a></li>
+            <li><a href="/event/{{event.id}}">{{event.name}}</a>&nbsp;{{event.event_date | date:"d"}}</li>
         {% endfor %}
     </ul>
     <p><a href="/event/add/">Add Event</a></p>

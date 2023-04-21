@@ -4,6 +4,7 @@ from django.http import HttpResponse
 from django.http import FileResponse
 from django.core import serializers
 from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin
 # django template,views
 from django.template import RequestContext, Template
 from django.views.generic.base import TemplateView
@@ -39,18 +40,22 @@ class ArchiveIndexViewDemo(ArchiveIndexView):
     date_field="event_date"
     allow_future = True
 
-class DeleteViewDemo(DeleteView):
+class DeleteViewDemo(LoginRequiredMixin,DeleteView):
+    login_url = reverse_lazy('login')
     model = Event
     context_object_name = 'event'
     success_url = reverse_lazy('show-events')
 
-class UpdateViewDemo(UpdateView):
+class UpdateViewDemo(LoginRequiredMixin,UpdateView):
+    login_url = reverse_lazy('login')
     model = Event
     fields = ['name','event_date','description']
     template_name_suffix = '_update_form'
     success_url = reverse_lazy('show-events')
 
-class CreateViewDemo(CreateView):
+class CreateViewDemo(LoginRequiredMixin,CreateView):
+    # login, logout, register เป็น name URL ที่แจงโก้สร้างไว้ให้อยู่แล้ว
+    login_url = reverse_lazy('login')
     model = Event
     fields = ['name','event_date','description']
     success_url = reverse_lazy('show-events')
@@ -58,6 +63,7 @@ class CreateViewDemo(CreateView):
 class ListViewDemo(ListView):
     model = Event
     context_object_name = 'all_events'
+    # paginate_by = 2
     
 class DetailViewDemo(DetailView):
     model = Event

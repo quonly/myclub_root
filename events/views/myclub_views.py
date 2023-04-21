@@ -1,6 +1,10 @@
 from django.shortcuts import render, redirect
 from django.template.response import TemplateResponse
 from django.core.paginator import Paginator
+from django.views.generic.edit import CreateView
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.decorators import login_required
+from django.urls import reverse_lazy
 
 from calendar import HTMLCalendar
 from datetime import date
@@ -8,7 +12,20 @@ import calendar
 
 from events.models import Event, Venue, MyClubUser
 from events.forms import VenueForm
-    
+
+# user management
+
+class Register(CreateView):
+    template_name = 'registration/register.html'
+    form_class = UserCreationForm
+    success_url = reverse_lazy('register-success')
+
+    def form_valid(self,form):
+        form.save()
+        return redirect(self.success_url)
+
+############################################
+
 def all_events(request):
     event_list = Event.events.all()
     context = {
@@ -52,7 +69,7 @@ def index(request, year=date.today().year, month=date.today().month):
     # return render(request, 'events/calendar_base.html', context=context)
     return TemplateResponse(request, 'events/calendar_base.html', context=context)
 
-
+@login_required(login_url=reverse_lazy('login'))
 def add_venue(request):
     submitted = False
     if request.method == "POST":

@@ -31,8 +31,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    # 'django.contrib.admin',
-    'myclub_site.apps.MyClubAdminConfig',
+    'django.contrib.admin',
+    # 'myclub_site.apps.MyClubAdminConfig',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',

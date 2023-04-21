@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  MyClub User Login
+{% endblock title %}
+
+{% block content %}
+  <h1>Please Login</h1>
+  <p>You must be logged in to access the user menu.</p>
+
+  <form action="{% url 'login' %}" method="post">
+    <table>
+      {% csrf_token %}
+      {{form.as_table}}
+      <tr>
+        <td>&nbsp;</td>
+        <td><input type="submit" value="Submit"></td>
+      </tr>
+    </table>
+    <p>Not registered yet? <a href="{%url 'register' %}">Register here</a>.</p>
+    <input type="hidden" name="next" value="{{next}}">
+  </form>
+
+{% endblock content %}

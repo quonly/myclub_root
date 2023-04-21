@@ -2,7 +2,7 @@ from django.urls import path, re_path
 from django.views.generic.dates import ArchiveIndexView
 from .models import Event
 
-from events.admin import admin_site
+# from events.admin import admin_site
 from . import views
 from .views import ListViewDemo, DetailViewDemo, CreateViewDemo,UpdateViewDemo,DeleteViewDemo,ArchiveIndexViewDemo,MonthArchiveViewDemo
 
@@ -12,7 +12,7 @@ urlpatterns = [
     path('<int:year>/<int:month>/',MonthArchiveViewDemo.as_view()),
     path('eventarchive/',ArchiveIndexViewDemo.as_view()),
     # path('eventarchive/',ArchiveIndexView.as_view(model=Event,date_field="event_date")),
-    path('eventsadmin/', admin_site.urls),
+    # path('eventsadmin/', admin_site.urls),
     path('condemo/', views.context_demo, name='condemo'),
     path('tdemo/', views.template_demo, name='tdemo'),
     path('getsubs/', views.list_subscribers, name='list-subscribers'),

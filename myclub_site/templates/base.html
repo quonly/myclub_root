@@ -14,9 +14,17 @@
         <div id="top_menu">
             Home | Calendar | About | Contact
             <a href="/contact">Contact Us</a>
+            {% if user.is_authenticated %}
+                Hello, {{user.username}}.
+                <a href="{%url 'logout' %}?next=/">Log out</a>.
+            {% else %}
+                Not logged in.
+                <a href="{% url 'login'%}?next=/">log in</a>
+            {% endif %}
         </div>
         <div id="topbanner"><img src="{% static 'top_banner.jpg' %}"></div>
     </header>
+    {% if user.is_authenticated %}        
     <aside id="rightsidebar">
         <nav id="nav">
             <ul>
@@ -26,6 +34,7 @@
             </ul>
         </nav>
     </aside>
+    {% endif %}
     <section id="main">
         {% block content %}
             <p>Placeholder text in base template. Replace with page content.</p>

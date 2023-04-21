@@ -1,15 +1,36 @@
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
 from django.contrib.admin import AdminSite
 from django.contrib.auth.models import User, Group
 from django.http import HttpResponse
 from django import forms
 
-from .models import Event, Venue, MyClubUser
+from .models import Event, Venue, MyClubUser, Subscriber
 from events.forms import VenueForm
 from ckeditor.widgets import CKEditorWidget
 
 from datetime import datetime
 import csv
+
+# advanced user management
+
+class MyClubUserInline(admin.StackedInline):
+    model = MyClubUser
+    can_delete = False
+    verbose_name = "Address and Phone"
+    verbose_name_plural = "Additional Info"
+
+class MyClubUserAdmin(UserAdmin):
+    inlines = [MyClubUserInline]
+
+@admin.register(Subscriber)
+class SubscriberAdmin(admin.ModelAdmin):
+    list_display = ('user','member_level')
+    list_filter = ('member_level',)
+
+admin.site.unregister(User)
+admin.site.register(User,MyClubUserAdmin)
+#####################################################
 
 # add actions
 def venue_csv(modeladmin,request,queryset):
@@ -31,15 +52,15 @@ venue_csv.short_description = "Export Selected Venues to CSV"
 def set_manager(modeladmin,request,queryset):
     queryset.update(manager=request.user)
 
-set_manager.short_description = "Manage selected events"
+set_manager.short_description = "Manager selected events"
 ######################################################################
 
-class EventsAdmin(AdminSite):
-    site_header = 'MyClub Events Administration'
-    site_title = 'MyClub Events Admin'
-    index_title = 'MyClub Events Admin Home'
+# class EventsAdmin(AdminSite):
+#     site_header = 'MyClub Events Administration'
+#     site_title = 'MyClub Events Admin'
+#     index_title = 'MyClub Events Admin Home'
     
-admin_site = EventsAdmin(name='eventsadmin')
+# admin_site = EventsAdmin(name='eventsadmin')
 
 class AttendeeInline(admin.TabularInline):
     model = Event.attendees.through
@@ -51,8 +72,8 @@ class EventInline(admin.TabularInline):
     fields = ('name','event_date')
     extra = 1 # กำหนดว่าจะให้แสดงแท็บกี่อัน
 
+# @admin.register(Venue,site=admin_site)
 @admin.register(Venue)
-@admin.register(Venue,site=admin_site)
 class VenueAdmin(admin.ModelAdmin):
     form = VenueForm
     # list_display = ('name', 'address', 'phone')
@@ -76,8 +97,8 @@ class EventAdminForm(forms.ModelForm):
         model = Event
         fields = '__all__'
 
+# @admin.register(Event,site=admin_site)
 @admin.register(Event)
-@admin.register(Event,site=admin_site)
 class EventAdmin(admin.ModelAdmin):
     form = EventAdminForm
     # fields = (('name', 'venue'), 'event_date', 'description', 'manager')
@@ -103,6 +124,6 @@ class EventAdmin(admin.ModelAdmin):
 
 # admin.site.register(Venue)
 # admin.site.register(Event)
-admin_site.register(User)
-admin_site.register(Group)
-admin.site.register(MyClubUser)
+# admin_site.register(User)
+# admin_site.register(Group)
+# admin.site.register(MyClubUser)
