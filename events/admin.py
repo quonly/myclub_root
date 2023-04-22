@@ -118,7 +118,10 @@ class EventAdmin(admin.ModelAdmin):
         ('Optional Information', {
             'classes': ('collapse',),
             'fields': ('description', 'manager')
-        })
+        }),
+        # ('Attendees',{
+        #     'fields':('attendees',)
+        # })
     )
 
 
@@ -126,4 +129,4 @@ class EventAdmin(admin.ModelAdmin):
 # admin.site.register(Event)
 # admin_site.register(User)
 # admin_site.register(Group)
-# admin.site.register(MyClubUser)
+admin.site.register(MyClubUser)

@@ -1,8 +1,19 @@
 from django import template
 from django.template.defaultfilters import stringfilter
 from datetime import datetime
+from events.models import Event
 
 register = template.Library()
+
+@register.simple_tag
+def show_attendees(e):
+  # attds = attendee.e.all()
+  e = list(Event.events.filter(name=e))[0]
+  attd_to_show = []
+  for attendee in e.attendees.all():
+    attd_to_show.append(str(attendee.user))
+  text_to_show = ','.join(attd_to_show)
+  return text_to_show
 
 @register.simple_tag
 def create_date(date_val):

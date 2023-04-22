@@ -7,7 +7,7 @@ class VenueManager(models.Manager):
         return super(VenueManager,self).get_queryset().filter(zip_code='10011')
 
 class Venue(models.Model):
-    name = models.CharField('Venue Name', max_length=120)
+    name = models.CharField('Venue Name', max_length=120,unique=True,error_messages={'unique':'วันที่นี้ถูกจองแล้วกรุณาเลือกวันอื่น'})
     address = models.CharField(max_length=300)
     zip_code = models.CharField('Zip/Post Code', max_length=12)
     phone = models.CharField('Contact Phone', max_length=20, blank=True)
@@ -29,7 +29,7 @@ class MyClubUser(models.Model):
 
     def __str__(self):
         # return self.first_name + " " + self.last_name
-        return ''
+        return self.user.first_name
 
 MEMBER_CHOICES = [
     ('A','Adult'),
@@ -49,7 +49,7 @@ class EventManager(models.Manager):
 
 class Event(models.Model):
     name = models.CharField('Event Name', max_length=120)
-    event_date = models.DateTimeField('Event Date')
+    event_date = models.DateTimeField('Event Date',)
     venue = models.ForeignKey(
         Venue, blank=True, null=True, on_delete=models.CASCADE)
     manager = models.ForeignKey(

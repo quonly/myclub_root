@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     # https://docs.djangoproject.com/en/4.2/ref/contrib/humanize/
     'django.contrib.humanize',
     'ckeditor',
+    'formtools',
 ]
 
 MIDDLEWARE = [
@@ -123,8 +124,17 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [BASE_DIR/'myclub_site/static']
+STATICFILES_DIRS = [BASE_DIR/'myclub_site/static', BASE_DIR/'events/static']
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# CKEditor
+
+CKEDITOR_CONFIGS = {
+    'default': {
+        'height': 300,
+        'width': 500,
+    }
+}

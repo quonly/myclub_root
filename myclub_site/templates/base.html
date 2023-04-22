@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <title>{% block title %} {{page_title | default:"Untitled Page"}}{% endblock title %}</title>
     <link rel="stylesheet" href="{% static 'main.css' %}" type="text/css">
+    {% block styles %}{% endblock styles %}
 </head>
 <body>
 <div id="wrapper">
@@ -29,8 +30,9 @@
         <nav id="nav">
             <ul>
                 <li><a href="/add_venue">Add Your Venue</a></li>
-                <li>Menu 2</li>
-                <li>Menu 3</li>
+                <li><a href="{%url 'show-events'%}">All Events</a></li>
+                <li><a href="/allevents">All Events Edit</a></li>
+                <li><a href="/survey">Survey</a></li>
             </ul>
         </nav>
     </aside>

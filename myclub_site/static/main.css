@@ -91,7 +91,7 @@ ul.errorlist {
   padding: 0;
 }
 
-.errorlist li {
+.errorlist li ,.error{
   border: 1px solid red;
   color: red;
   background: rgba(255, 0, 0, 0.15);
@@ -105,7 +105,7 @@ ul.errorlist {
 }
 
 input,
-textarea {
+textarea,button {
   width: 100%;
   padding: 5px !important;
   box-sizing: border-box;
@@ -116,7 +116,11 @@ textarea {
 input {
   height: 30px;
 }
-
+input[type="submit"],button{
+  height: 30px;
+  width: 150px;
+  float:right;
+}
 .success {
   background-color: rgba(0, 129, 0, 0.15);
   padding: 10px;

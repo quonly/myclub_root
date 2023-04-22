@@ -4,6 +4,8 @@
   CreateView Demo
 {% endblock title %}
 
+{% block styles %}{{ form.media }}{% endblock styles %}
+
 {% block content %}
   <h1>Add Event</h1>
   <form action="" method="post">

@@ -1,10 +1,14 @@
 # django
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from django.http import FileResponse
 from django.core import serializers
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.mail import send_mail, get_connection
+from django.contrib import messages
+
 # django template,views
 from django.template import RequestContext, Template
 from django.views.generic.base import TemplateView
@@ -12,19 +16,114 @@ from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView,DeleteView
 from django.views.generic.dates import ArchiveIndexView, MonthArchiveView
+from django.forms import formset_factory, modelformset_factory
 
-# models
+# models and forms
 from events.models import Venue,MyClubUser,Event
+from events.forms import EventForm, CommitteeForm
 
 # python package
 from datetime import datetime
 import csv
 import io
 
-# app package
+# django app 
+from formtools.wizard.views import SessionWizardView
+
+# csv pdf
 from reportlab.pdfgen import canvas
 from reportlab.lib.units import inch
 from reportlab.lib.pagesizes import letter
+
+# model form wizards
+
+class ModelFormWizard(SessionWizardView):
+    template_name = 'events/modelwiz_demo.html'
+    def done(self,form_list,**kwargs):
+        for form in form_list:
+            form.save()
+        return redirect('/')
+
+# multi form
+'''
+ขั้นตอนการสร้าง
+    1. สร้างฟอร์มก่อน โดยสืบทอดมาจาก forms.Form ตามปกติและตั้งค่าตามที่ต้องการ
+    2. มาที่ views และสร้างคลาสที่สืบทอดมาจาก SessionWizardView ภายในคลาสนี้ต้องการเมธอด done เพื่อจัดการกับฟอร์มที่ทำเสร็จแล้ว 
+    3. สร้าง template โดยจะต้องใส่ wizard.management_form ภายใน form ด้วยทุกครั้ง แจงโก้จะทำการเรนเดอร์เป็น input:hidden ใช้เพื่อให้แจงโก้สามารถจัดการกับฟอร์มวิซาร์ดได้
+    4. เพิ่มพาธที่ urls เนื่องจากเป็นคลาสวิวจะต้องต่อท้ายด้วยเมธอด as_view([form1,form2]) โดยที่จะต้องใส่ลิสต์ของฟอร์มเข้าไปภายในเมธอดด้วย เพื่อให้รู้ว่าใช้ฟอร์มใดบ้าง
+'''
+
+class SurveyWizard(SessionWizardView):
+    template_name = 'events/survey.html'
+    def done(self,form_list,**kwargs):
+        print('form_list',form_list)
+        responses = [form.cleaned_data for form in form_list]
+        mail_body = ''
+        for response in responses:
+            print('response.items()',response.items())
+            for k,v in response.items():
+                mail_body += f"{k}: {v}\n"
+        con = get_connection('django.core.mail.backends.console.EmailBackend')
+        send_mail(
+            'Survey Submission',
+            mail_body,
+            'noreply@example.com',
+            ['siteowner@example.com'],
+            connection=con
+        )
+        messages.add_message(
+            self.request,
+            messages.SUCCESS,
+            'Your survey was submitted successfully. Thank you for your feedback'
+        )
+        return redirect('/survey')
+
+############################################
+
+# formset
+
+def all_events(request):
+    EventsFormSet = modelformset_factory(
+        Event,
+        fields=('name','event_date',),
+        extra=0
+    )
+    qry = Event.events.all()
+    pg = Paginator(qry,4)
+    page = request.GET.get('page')
+    try:
+        event_records = pg.page(page)
+    except PageNotAnInteger:
+        event_records = pg.page(1)
+    except EmptyPage:
+        event_records = pg.page(pg.num_pages)
+    if request.method == 'POST':
+        formset = EventsFormSet(request.POST)
+        if formset.is_valid():
+            formset.save()
+            return_url = '/allevents'
+            if 'page' in request.GET:
+                return_url +=f'?page={request.GET["page"]}'
+            return redirect(return_url)
+    else:
+        page_qry = qry.filter(id__in=[event.id for event in event_records])
+        print('page_qry',page_qry)
+        formset = EventsFormSet(queryset=page_qry)
+    context = {'event_records':event_records,'formset':formset}
+    return render(request,'events/all_events.html',context)
+
+def committee_formset(request):
+    committee_formset = formset_factory(CommitteeForm,extra=3)
+    if request.method == 'POST':
+        formset = committee_formset(request.POST)
+        if formset.is_valid():
+            # process the form
+            pass
+    else:
+        formset = committee_formset()
+        return render(request,'events/committee.html',{'formset':formset})
+
+###################################################
 
 # Class-Based-Views (CBV)
 
@@ -49,21 +148,23 @@ class DeleteViewDemo(LoginRequiredMixin,DeleteView):
 class UpdateViewDemo(LoginRequiredMixin,UpdateView):
     login_url = reverse_lazy('login')
     model = Event
-    fields = ['name','event_date','description']
+    # fields = ['name','event_date','description']
     template_name_suffix = '_update_form'
     success_url = reverse_lazy('show-events')
+    form_class = EventForm
 
 class CreateViewDemo(LoginRequiredMixin,CreateView):
     # login, logout, register เป็น name URL ที่แจงโก้สร้างไว้ให้อยู่แล้ว
     login_url = reverse_lazy('login')
     model = Event
-    fields = ['name','event_date','description']
+    # fields = ['name','event_date','description']
     success_url = reverse_lazy('show-events')
+    form_class = EventForm
 
 class ListViewDemo(ListView):
     model = Event
     context_object_name = 'all_events'
-    # paginate_by = 2
+    # paginate_by = 2 # ทำให้แบ่ง pagination ในคลาสได้
     
 class DetailViewDemo(DetailView):
     model = Event

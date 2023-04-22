@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Wizard Demo
+{% endblock title %}
+
+{% block styles %}
+  {{wizard.form.media}}
+{% endblock styles %}
+
+{% block content %}
+  <h1>Model Form Wizard Demo</h1>
+
+  {% if messages %}
+    {% for msg in messages %}
+      <p {% if msg.tags %} class="{{msg.tags}}"{%endif%}>{{msg}}</p>
+    {% endfor %}
+  {% endif %}
+  <p>Step {{wizard.steps.step1}} of {{wizard.steps.count}}</p>
+  <form action="" method="post" novalidate>
+    {% csrf_token %}
+    <table>
+      {# the wizard object is passed to the template by the SessionWizardView class #}
+    {{wizard.management_form}}
+    {% if wizard.form.forms %}
+      {% for form in wizard.form.forms %}
+        {{form.as_p}}
+      {% endfor %}
+    {% else %}
+      {{wizard.form}}
+    {% endif %}
+    </table>
+    {% if wizard.steps.next %}
+    <input type="submit" value="Next"/>
+    {% else %}
+    <input type="submit" value="Submit"/>
+    {% endif %}
+    {% if wizard.steps.prev %}
+    <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}">Back</button>
+    {% endif %}
+  </form>
+{% endblock content %}
